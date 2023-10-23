@@ -19,7 +19,7 @@ if [ ! -f $DEMOMAGIC ]; then
 fi
 
 . ./demo-magic.sh
-# Uncomment to turn off command typing.
+# TODO(vinayakankugoyal): set this before demo..
 TYPE_SPEED=""
 #DEMO_PROMPT="compromised_node# "
 # Turns out the white defined in demo-magic renders a little grey.
