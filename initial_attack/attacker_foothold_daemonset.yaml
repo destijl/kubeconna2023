@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: kube-controller
+  name: kube-controller
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: kube-controller
+  template:
+    metadata:
+      labels:
+        app: kube-controller
+    spec:
+      containers:
+      - image: ubuntu
+        imagePullPolicy: IfNotPresent
+        name: kube-controller
