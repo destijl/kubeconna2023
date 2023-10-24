@@ -3,7 +3,7 @@ kind: ClusterRoleBinding
 metadata:
   name: cluster-system-anonymous
 subjects:
-- kind: Group
+- kind: User
   name: system:anonymous
 roleRef:
   kind: ClusterRole

