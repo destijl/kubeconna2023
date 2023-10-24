@@ -16,8 +16,3 @@ gcloud container clusters create ${SAFE_CLUSTER_NAME} \
        --cluster-version=${SAFE_CLUSTER_VERSION} \
        --num-nodes=2
 
-#gcloud container clusters create-auto "${SAFE_CLUSTER_NAME}-auto" \
-#       --region=${REGION} \
-#       --release-channel "rapid" \
-#       --cluster-version=${SAFE_CLUSTER_VERSION}
-
