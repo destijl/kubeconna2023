@@ -7,11 +7,12 @@ set -o pipefail
 export TERM=xterm
 
 export VULN_CLUSTER_NAME="vulnerable-cluster"
-export SAFE_CLUSTER_NAME="safe"
+export SAFE_CLUSTER_NAME="safe-128"
 export VULN_CLUSTER_VERSION="1.27.3-gke.100"
-export SAFE_CLUSTER_VERSION="1.27.3-gke.100"
-export PROJECT="gcastle-gke-dev"
-export ZONE=${ZONE:-us-central1-c}
+export SAFE_CLUSTER_VERSION="1.28.2-gke.1157000"
+export PROJECT="gcastle-testing-402921"
+export ZONE="us-central1-c"
+export REGION="us-central1"
 
 DEMOMAGIC="demo-magic.sh"
 

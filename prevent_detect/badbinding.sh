@@ -3,6 +3,7 @@
 source ../shell_setup.sh
 
 gcloud container clusters get-credentials ${VULN_CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT} &> /dev/null
+kubectl delete -f badbinding.yaml &>/dev/null || true
 
 echo ""
 echo ""
@@ -43,4 +44,9 @@ echo ""
 pe "kubectl apply -f badbinding.yaml" || true
 echo ""
 echo ""
+pe "gcloud container clusters get-credentials ${SAFE_CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT}"
+echo ""
+echo ""
+pe "kubectl apply -f badbinding.yaml" || true
+gcloud container clusters get-credentials ${VULN_CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT} &> /dev/null
 kubectl delete --wait=false -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml &> /dev/null
