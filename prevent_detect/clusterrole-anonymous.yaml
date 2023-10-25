@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: bad-clusterrole-binding
+  name: bad-clusterrole-binding-anonymous
 subjects:
 - kind: User
   name: system:anonymous
@@ -9,4 +9,3 @@ roleRef:
   kind: ClusterRole
   name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
-

@@ -23,7 +23,7 @@ fi
 
 . ./demo-magic.sh
 # Uncomment to turn off command typing.
-TYPE_SPEED=""
+#TYPE_SPEED=""
 #DEMO_PROMPT="compromised_node# "
 # Turns out the white defined in demo-magic renders a little grey.
 DEMO_CMD_COLOR=$COLOR_RESET
