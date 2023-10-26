@@ -22,13 +22,14 @@ pe "cat clusterrole-anonymous.yaml"
 echo ""
 echo ""
 pe "kubectl apply -f clusterrole-anonymous.yaml"
-echo ""
-echo ""
-pe "curl -ks https://${CLUSTER_IP}/api/v1/secrets | jq -r '.items[].metadata.name'"
 pe "clear"
 echo ""
 echo ""
+pe "curl -ks https://${CLUSTER_IP}/api/v1/secrets | jq -r '.items[].metadata.name'"
+echo ""
+echo ""
 pe "kubectl delete -f clusterrole-anonymous.yaml"
+pe "clear"
 echo ""
 echo ""
 pe "kubectl apply -f gatekeeper/gatekeeper.yaml"
@@ -40,12 +41,7 @@ pe "kubectl apply -f gatekeeper/disallowanonymous_constraint.yaml"
 pe "clear"
 echo ""
 echo ""
-pe "kubectl apply -f clusterrole-anonymous.yaml
--f clusterrole-authenticated.yaml
--f clusterrole-unauthenticated.yaml
--f role-anonymous.yaml
--f role-authenticated.yaml
--f role-unauthenticated.yaml" || true
+pe "kubectl apply -f clusterrole-anonymous.yaml" || true
 # Should we cover cluster-admin generally? This command doesn't work, not sure
 # where the CRDs are for this.
 #pe "kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/acm-policy-controller-library/main/bundles/cis-k8s-v1.5.1/5.1.1_restrict-clusteradmin-rolebindings.yaml"
@@ -53,15 +49,11 @@ pe "kubectl apply -f clusterrole-anonymous.yaml
 pe "clear"
 echo ""
 echo ""
-pe "gcloud container clusters get-credentials ${SAFE_CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT}"
+gcloud container clusters get-credentials ${SAFE_CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT} &> /dev/null
+DEMO_PROMPT="gke 1.28 cluster$ "
 echo ""
 echo ""
-pe "kubectl apply -f clusterrole-anonymous.yaml
--f clusterrole-authenticated.yaml
--f clusterrole-unauthenticated.yaml
--f role-anonymous.yaml
--f role-authenticated.yaml
--f role-unauthenticated.yaml" || true
+pe "kubectl apply -f clusterrole-anonymous.yaml" || true
 gcloud container clusters get-credentials ${VULN_CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT} &> /dev/null
 kubectl delete --wait=false -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml &> /dev/null || true
 

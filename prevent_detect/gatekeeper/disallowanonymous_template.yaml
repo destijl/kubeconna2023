@@ -1,4 +1,5 @@
 # Local copy of https://raw.githubusercontent.com/open-policy-agent/gatekeeper-library/master/library/general/disallowanonymous/template.yaml
+# Modified slightly to also block system:authenticated
 apiVersion: templates.gatekeeper.sh/v1
 kind: ConstraintTemplate
 metadata:
@@ -42,6 +43,10 @@ spec:
 
         review(subject) = true {
           subject.name == "system:unauthenticated"
+        }
+
+        review(subject) = true {
+          subject.name == "system:authenticated"
         }
 
         review(subject) = true {

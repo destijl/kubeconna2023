@@ -4,7 +4,6 @@ source ../shell_setup.sh
 
 gcloud config set project ${PROJECT}
 
-# Create cluster
 gcloud container clusters create ${VULN_CLUSTER_NAME} \
        --zone=${ZONE} \
        --cluster-version=${VULN_CLUSTER_VERSION} \
