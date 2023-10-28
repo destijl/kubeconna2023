@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # $Id: $
-source ../shell_setup.sh
+source ./shell_setup.sh
 
 # Quick and dirty script to verify all the dimensions of acccess with
 # misconfigured RBAC. Too much to cover every case in the talk.

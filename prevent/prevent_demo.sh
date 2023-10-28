@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../shell_setup.sh
+source ./shell_setup.sh
 
 gcloud container clusters get-credentials ${VULN_CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT} &> /dev/null
 CLUSTER_IP=$(gcloud container clusters describe ${VULN_CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT} --format="value(endpoint)")

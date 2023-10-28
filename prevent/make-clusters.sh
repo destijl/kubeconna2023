@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../shell_setup.sh
+source ./shell_setup.sh
 
 gcloud config set project ${PROJECT}
 
