@@ -20,7 +20,7 @@ fi
 
 . ./demo-magic.sh
 # TODO(vinayakankugoyal): set this before demo..
-TYPE_SPEED=""
+TYPE_SPEED=20
 #DEMO_PROMPT="compromised_node# "
 # Turns out the white defined in demo-magic renders a little grey.
 DEMO_CMD_COLOR=$BOLD
@@ -28,14 +28,15 @@ clear
 echo ""
 echo ""
 
-EXIST=$(gcloud container clusters list --format json | jq '.[] | select(.name == "gke-customer-cluster") | .name')
-
-if [ $EXIST = "gke-customer-cluster" ];
+EXIST=$(gcloud container clusters list --format json | jq -r '.[] | select(.name == "gke-customer-cluster") | .name')
+if [ "$EXIST" != "gke-customer-cluster" ];
 then
+    echo "creating cluster"
     gcloud container clusters create --project $PROJECT \
     --cluster-version $VULN_CLUSTER_VERSION \
     --location $ZONE \
-    $VULN_CLUSTER_NAME &> /dev/null
+    $VULN_CLUSTER_NAME
+    echo "cluster creation finished"
 fi
 
 gcloud container clusters get-credentials $VULN_CLUSTER_NAME \
@@ -71,11 +72,11 @@ DEMO_PROMPT="attacker-machine $ "
 p "scan_vulnerable_clusters.py"
 
 echo "scanning..."
-sleep 2
+sleep 1
 echo "scanning..."
-sleep 2
+sleep 1
 echo "scanning..."
-sleep 2
+sleep 1
 echo "target found!"
 
 wait
@@ -147,16 +148,16 @@ pe "kubectl apply -f attacker_persistence_csr.yaml"
 echo ""
 echo ""
 
-sleep 10
+sleep 5
 
 pe "kubectl certificate approve cluster-admin"
 
 echo ""
 echo ""
 
-sleep 10
+sleep 5
 
-pe "kubectl get csr cluster-admin -o jsonpath='{.status.certificate}' | base64 -d | openssl x509 -subject -noout"
+pe "kubectl get csr cluster-admin"
 
 kubectl get csr cluster-admin -o jsonpath='{.status.certificate}' | base64 -d > csr.crt
 
@@ -197,10 +198,7 @@ echo ""
 
 pe "clear"
 
-echo ""
-echo ""
-
-pe "kubectl apply -f attacker_daemonset_update.yaml"
+wait
 
 ### Cleanup ###
 
