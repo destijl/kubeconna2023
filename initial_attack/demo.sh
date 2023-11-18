@@ -6,10 +6,8 @@ set -o pipefail
 
 ### Setup ###
 
-export VULN_CLUSTER_NAME="gke-customer-cluster"
+export VULN_CLUSTER_NAME="vuln-cluster"
 export VULN_CLUSTER_VERSION="1.27.3-gke.100"
-export PROJECT="vinaygo-gke-dev"
-export ZONE="us-central1-c"
 
 DEMOMAGIC="demo-magic.sh"
 
@@ -19,7 +17,6 @@ if [ ! -f $DEMOMAGIC ]; then
 fi
 
 . ./demo-magic.sh
-# TODO(vinayakankugoyal): set this before demo..
 TYPE_SPEED=20
 #DEMO_PROMPT="compromised_node# "
 # Turns out the white defined in demo-magic renders a little grey.
@@ -28,20 +25,17 @@ clear
 echo ""
 echo ""
 
-EXIST=$(gcloud container clusters list --format json | jq -r '.[] | select(.name == "gke-customer-cluster") | .name')
-if [ "$EXIST" != "gke-customer-cluster" ];
+EXIST=$(gcloud container clusters list --format json | jq -r '.[] | select(.name == "vuln-cluster") | .name')
+if [ "$EXIST" != "vuln-cluster" ];
 then
     echo "creating cluster"
-    gcloud container clusters create --project $PROJECT \
+    gcloud container clusters create \
     --cluster-version $VULN_CLUSTER_VERSION \
-    --location $ZONE \
     $VULN_CLUSTER_NAME
     echo "cluster creation finished"
 fi
 
-gcloud container clusters get-credentials $VULN_CLUSTER_NAME \
---project $PROJECT \
---location $ZONE &> /dev/null
+gcloud container clusters get-credentials $VULN_CLUSTER_NAME &> /dev/null
 
 ### DEMO ###
 
@@ -50,7 +44,7 @@ clear
 echo ""
 echo ""
 
-DEMO_PROMPT="customer-cluster $ "
+DEMO_PROMPT="vuln-cluster $ "
 
 pe "cat customer_binding.yaml"
 
@@ -202,7 +196,9 @@ wait
 
 ### Cleanup ###
 
-rm csr.key csr.crt csr.csr attacker_persistence_csr.yaml &> /dev/null
-kubectl delete --wait=false clusterrolebinding cluster-system-anonymous kube-controller-manager kube-controller-admin &> /dev/null
-kubectl delete --wait=false ds kube-controller &> /dev/null
-kubectl delete --wait=false csr cluster-admin &> /dev/null
+rm csr.key csr.crt csr.csr attacker_persistence_csr.yaml
+kubectl delete clusterrolebinding cluster-system-anonymous
+kubectl delete clusterrolebinding kube-controller-manager
+kubectl delete clusterrolebinding kube-controller-admin
+kubectl delete daemonset kube-controller -n kube-system
+gcloud contianer clusters delete vuln-cluster
